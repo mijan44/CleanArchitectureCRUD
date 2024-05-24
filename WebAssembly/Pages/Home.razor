@@ -1,0 +1,55 @@
+﻿@page "/"
+@using Application.Services
+
+@using Domain.Entities
+@using NetcodeHub.Packages.Components.Validations.OnInput
+
+@inject IEmployeeService emp
+@inject Blazored.Toast.Services.IToastService toastService
+
+
+
+<PageTitle>Home</PageTitle>
+
+<div class="row">
+    <div class="col-lg-6">
+        <EditForm Model="employee" OnValidSubmit="Save">
+            <DataAnnotationsValidator />
+            <FloatingText @bind-Value="employee.Name"
+                          Label="Customer Fullname"
+                          Placeholder="John"
+                          class="form-control mb-3"/>
+            <ValidationMessage For="()=>employee.Name" />
+
+            <FloatingTextArea @bind-Value="employee.Address"
+                              Label="Customer Address"
+                              Placeholder="Penang Malaysia" class="form-control mb-3" />
+            <ValidationMessage For="()=>employee.Address" />
+
+                <button class="btn btn-primary mt-5 mb-5"type="submit">Save</button>
+        </EditForm>
+
+    </div>
+    
+     
+</div>
+
+
+
+
+@code {
+    Employee employee = new();
+    async Task Save()
+    {
+        var result = await emp.AddAsync(employee);
+
+        if (result != null)
+        {
+            toastService.ShowSuccess("Employee added successfully!");
+        }
+        else
+        {
+            toastService.ShowError("Failed to add employee.");
+        }
+    }
+}
